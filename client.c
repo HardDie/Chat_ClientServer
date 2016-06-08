@@ -176,6 +176,7 @@ void DrawSystemMesage( char * msg ) {
 	wprintw( winChat, "\nSYSTEM: %s", msg );
 	wattron( winChat, COLOR_PAIR( 1 ) );	// Возвращаем стандартный цвет
 	wrefresh( winChat );
+	wrefresh( winMsg );
 }
 
 /*
