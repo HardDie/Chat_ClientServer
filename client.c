@@ -54,7 +54,7 @@ int main() {
 		wclear( winMsg );
 		wprintw( winMsg, "Enter message: " );
 		wgetnstr( winMsg, sendMessage.msg_, MESSAGE_SIZE - 1 );
-		send( sock_enemy, &sendMessage.msg_, strlen( sendMessage.msg_ ), 0 );
+		SendMessage();
 		if ( strcmp( "exit", sendMessage.msg_ ) == 0 || strcmp( "q", sendMessage.msg_ ) == 0 ) {
 			isDone = 1;
 		}
@@ -209,6 +209,17 @@ void * RecieveMessage () {
 		DrawMessage();
     }
     return NULL;
+}
+
+/*
+====================
+SendMessage
+
+	Отправляет сообщение серверу
+====================
+*/
+void SendMessage() {
+	send( sock_enemy, &sendMessage.msg_, strlen( sendMessage.msg_ ), 0 );
 }
 
 /*
