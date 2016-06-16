@@ -120,10 +120,10 @@ void * client_scocket_reader ( void * userStruct ) {
 				state = STATE_CHAT;
 	            break;
 			case STATE_CHAT:
-			strcpy( msg.user_, "Server" );
-			strcpy( msg.msg_, user->username_ );
-			strcat( msg.msg_, ", welcome to chat!" );
-			NetSendMessage( user, &msg );
+				strcpy( msg.user_, "Server" );
+				strcpy( msg.msg_, user->username_ );
+				strcat( msg.msg_, ", welcome to chat!" );
+				NetSendMessage( user, &msg );
 				while ( 1 ) {
 					if ( NetRecieveMessege( user, &msg ) == 0 ) {
 							state = STATE_EXIT;
@@ -132,7 +132,7 @@ void * client_scocket_reader ( void * userStruct ) {
 					}
 					strcpy( msg.user_, user->username_ );
 					if ( strcmp( msg.msg_, "!logout" ) == 0 ) {
-						state == STATE_EXIT;
+						state = STATE_EXIT;
 						fprintf( stderr, "Client [%s] leave chat\n", user->username_ );
 						break;
 					} else {
@@ -171,6 +171,10 @@ int main( int argc, char *argv[] ) {
             ListPushBack( &list, tmpUser );
         }
     }
+
+	for( int i = 0; i < ListSize( &list ); i++ ) {
+		close( ( ( struct usUser_t * )ListGetElement( &list, i ) )->socket_ );
+	}
 
     ListFree( &list );
     return 0;
