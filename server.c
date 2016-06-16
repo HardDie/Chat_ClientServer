@@ -17,7 +17,39 @@
 usList_t *              list;
 struct usUser_t *		tmpUser;
 
-void * client_scocket_reader ( void * userStruct ) {
+void * WorkWithClient ( void * userStruct );
+
+int main( int argc, char *argv[] ) {
+	NetStartServer();
+
+    while ( 1 ) {
+        tmpUser = malloc( sizeof( struct usUser_t ) );
+        tmpUser->socket_ = NetAcceptConnection();
+        if ( tmpUser->socket_ < 0 ) {
+            fprintf( stderr, "ERROR conection client\n" );
+            free( tmpUser );
+        } else {
+            pthread_create ( &( tmpUser->thread_ ), NULL, WorkWithClient, tmpUser );
+            ListPushBack( &list, tmpUser );
+        }
+    }
+
+	for( int i = 0; i < ListSize( &list ); i++ ) {
+		close( ( ( struct usUser_t * )ListGetElement( &list, i ) )->socket_ );
+	}
+
+    ListFree( &list );
+    return 0;
+}
+
+/*
+====================
+WorkWithClient
+
+	Осуществляет работу с отдельным клиентом
+====================
+*/
+void * WorkWithClient ( void * userStruct ) {
 	char 				password[NAME_SIZE];	// Временное хранилище пароля
     struct usUser_t * 	user = userStruct;	// Структура хранящая описание пользователя
 	usMessage_t 		msg;	// Структура сообщения
@@ -153,29 +185,4 @@ void * client_scocket_reader ( void * userStruct ) {
 	}
 
     return NULL;
-}
-
-
-
-int main( int argc, char *argv[] ) {
-	NetStartServer();
-
-    while ( 1 ) {
-        tmpUser = malloc( sizeof( struct usUser_t ) );
-        tmpUser->socket_ = NetAcceptConnection();
-        if ( tmpUser->socket_ < 0 ) {
-            fprintf( stderr, "ERROR conection client\n" );
-            free( tmpUser );
-        } else {
-            pthread_create ( &( tmpUser->thread_ ), NULL, client_scocket_reader, tmpUser );
-            ListPushBack( &list, tmpUser );
-        }
-    }
-
-	for( int i = 0; i < ListSize( &list ); i++ ) {
-		close( ( ( struct usUser_t * )ListGetElement( &list, i ) )->socket_ );
-	}
-
-    ListFree( &list );
-    return 0;
 }
