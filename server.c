@@ -8,6 +8,7 @@
 #include <netinet/in.h>
 #include <pthread.h>
 #include <netdb.h>  // struct hostent
+#include <mcheck.h>
 
 #include "lib/List.h"
 #include "message.h"
@@ -22,19 +23,38 @@ void * WorkWithClient ( void * userStruct );
 void * ListenClients();
 
 int main( int argc, char *argv[] ) {
+	mtrace();
+	/* Start server */
 	NetStartServer();
-
 	pthread_create( &clientThread, NULL, ListenClients, NULL );
 
-	printf( "Server created and wait clients\n" );
+	/* Server command line */
+	printf( "Server created and wait clients, when show command enter \'help\'\n" );
+	char buffer[1024];
 	while( 1 ) {
+		printf( "> " );
+		scanf( "%s", buffer );
+		if ( strcmp( buffer, "exit" ) == 0 ) {
+			break;
+		} else if ( strcmp( buffer, "list" ) == 0 ) {
+			for ( int i = 0; i < ListSize( &list ); i++ ) {
+				printf( "[ %s ] ", (( struct usUser_t * )ListGetElement( &list, i ))->username_ );
+			}
+			printf( "\n" );
+		} else if ( strcmp( buffer, "help" ) == 0 ) {
+			printf( "\texit - close server\n" );
+			printf( "\tlist - show list clients\n" );
+		}
 	}
 
+	/* Close server */
 	for( int i = 0; i < ListSize( &list ); i++ ) {
-		close( ( ( struct usUser_t * )ListGetElement( &list, i ) )->socket_ );
+		close( (( struct usUser_t * )ListGetElement( &list, i ))->socket_ );
 	}
 
     ListFree( &list );
+	free( tmpUser );
+	muntrace();
     return 0;
 }
 
@@ -52,11 +72,13 @@ void * ListenClients() {
         if ( tmpUser->socket_ < 0 ) {
             fprintf( stderr, "ERROR conection client\n" );
             free( tmpUser );
+			return NULL;
         } else {
             pthread_create ( &( tmpUser->thread_ ), NULL, WorkWithClient, tmpUser );
             ListPushBack( &list, tmpUser );
         }
     }
+	return NULL;
 }
 
 /*
@@ -71,7 +93,6 @@ void * WorkWithClient ( void * userStruct ) {
     struct usUser_t * 	user = userStruct;	// Структура хранящая описание пользователя
 	usMessage_t 		msg;	// Структура сообщения
 
-	printf( "Connection created!\n" );
     enum state_t state;
     state = STATE_MENU;
 
