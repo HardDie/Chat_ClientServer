@@ -16,13 +16,37 @@
 
 usList_t *              list;
 struct usUser_t *		tmpUser;
+pthread_t				clientThread;
 
 void * WorkWithClient ( void * userStruct );
+void * ListenClients();
 
 int main( int argc, char *argv[] ) {
 	NetStartServer();
 
-    while ( 1 ) {
+	pthread_create( &clientThread, NULL, ListenClients, NULL );
+
+	printf( "Server created and wait clients\n" );
+	while( 1 ) {
+	}
+
+	for( int i = 0; i < ListSize( &list ); i++ ) {
+		close( ( ( struct usUser_t * )ListGetElement( &list, i ) )->socket_ );
+	}
+
+    ListFree( &list );
+    return 0;
+}
+
+/*
+====================
+ListenClients
+
+	Слушает клиентов и добавляет их в список в случае подключения нового
+====================
+*/
+void * ListenClients() {
+	while ( 1 ) {
         tmpUser = malloc( sizeof( struct usUser_t ) );
         tmpUser->socket_ = NetAcceptConnection();
         if ( tmpUser->socket_ < 0 ) {
@@ -33,13 +57,6 @@ int main( int argc, char *argv[] ) {
             ListPushBack( &list, tmpUser );
         }
     }
-
-	for( int i = 0; i < ListSize( &list ); i++ ) {
-		close( ( ( struct usUser_t * )ListGetElement( &list, i ) )->socket_ );
-	}
-
-    ListFree( &list );
-    return 0;
 }
 
 /*
