@@ -120,6 +120,10 @@ void * client_scocket_reader ( void * userStruct ) {
 				state = STATE_CHAT;
 	            break;
 			case STATE_CHAT:
+			strcpy( msg.user_, "Server" );
+			strcpy( msg.msg_, user->username_ );
+			strcat( msg.msg_, ", welcome to chat!" );
+			NetSendMessage( user, &msg );
 				while ( 1 ) {
 					if ( NetRecieveMessege( user, &msg ) == 0 ) {
 							state = STATE_EXIT;
@@ -140,7 +144,7 @@ void * client_scocket_reader ( void * userStruct ) {
 				break;
 	        case STATE_EXIT:
 				close( user->socket_ );
-	            ListDeleteElementAtData( &list, user );
+				ListDeleteElementAtData( &list, user );
 				return NULL;
 	            break;
 	        default:
