@@ -34,7 +34,7 @@ void 	DrawWindows();
 void 	DrawMessage();
 void	DrawSystemMesage( char * msg );
 void 	ClearBuffer( char * buf, int size );
-void * 	RecieveMessage ();
+void * 	RecieveMessage();
 void	SendMessage();
 int		SetupNetwork();
 
