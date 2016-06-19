@@ -125,21 +125,17 @@ void DrawWindows() {
 		addch( '-' );
 	}
 
-	move( 2, 0 );
-	for ( int i = 0; i < heigthChatWindow; i++ ) {
+	for ( int i = 2; i < heigthChatWindow + 2; i++ ) {
+		move( i, 0 );
 		addch( '|' );
-		for ( int j = 0; j < widthChatWindow; j++ ) {
-			addch( ' ' );
-		}
+		move( i, widthChatWindow + 1 );
 		addch( '|' );
 	}
 
-	move( heigthChatWindow + 3, 0 );
-	for ( int i = 0; i < heightMsgWindow; i++ ) {
+	for ( int i = heigthChatWindow + 3; i < heigthChatWindow + 3 + heightMsgWindow; i++ ) {
+		move( i, 0 );
 		addch( '|' );
-		for ( int j = 0; j < widthMsgWindow; j++ ) {
-			addch( ' ' );
-		}
+		move( i, widthMsgWindow + 1 );
 		addch( '|' );
 	}
 	for ( int i = 0; i < widthMsgWindow + 2; i++ ) {
