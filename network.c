@@ -54,7 +54,7 @@ NetAcceptConnection
 int	NetAcceptConnection() {
 	struct sockaddr_in cli_addr;
 	int sin_size = sizeof( struct sockaddr_in );
-	return accept( sock_server, ( struct sockaddr * )&( cli_addr ), &sin_size );
+	return accept( sock_server, ( struct sockaddr * )&( cli_addr ), ( socklen_t * )&sin_size );
 }
 
 /*
