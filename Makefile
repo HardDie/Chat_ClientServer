@@ -13,7 +13,7 @@ serverobj=	\
 		$(path)/server.o	\
 		$(path)/network.o
 
-all : clean $(path)/client $(path)/server
+all : check_bin $(path)/client $(path)/server
 
 $(path)/client : $(clientobj)
 	$(comp) $(clientobj) -o $(path)/client $(clientlib)
@@ -24,5 +24,8 @@ $(path)/server : $(serverobj)
 $(path)/%.o : %.c
 	$(comp) -c $< -o $@
 
+check_bin :
+	@ if [ ! -d $(path) ]; then mkdir $(path); fi
+
 clean :
-	rm -rf $(path)/*
+	rm -rf $(path)
