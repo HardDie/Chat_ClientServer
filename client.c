@@ -43,7 +43,11 @@ int main() {
 	DrawWindows();
 
 	DrawSystemMesage( "Start connection to server..." );
-	SetupNetwork();
+	if ( -1 == SetupNetwork() ) {
+		getch();
+		ClearMemory();
+		return -1;
+	}
 	DrawSystemMesage( "Server connected" );
 
 	char isDone = 0;
