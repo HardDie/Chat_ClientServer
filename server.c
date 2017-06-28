@@ -10,7 +10,7 @@
 #include <netdb.h>  // struct hostent
 #include <mcheck.h>
 
-#include "lib/List.h"
+#include "List/List.h"
 #include "message.h"
 #include "network.h"
 #include "global.h"

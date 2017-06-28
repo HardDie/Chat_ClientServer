@@ -1,6 +1,6 @@
 comp=gcc -std=c99 -Wall
 path=bin
-pathlib=-Llib
+pathlib=-LList/bin
 clientlib=-lpthread -lncurses
 serverlib=-lpthread -lList
 
@@ -13,13 +13,19 @@ serverobj=	\
 		$(path)/server.o	\
 		$(path)/network.o
 
-all : check_bin $(path)/client $(path)/server
+all : libList check_bin $(path)/client $(path)/server
 
 $(path)/client : $(clientobj)
 	$(comp) $(clientobj) -o $(path)/client $(clientlib)
 
 $(path)/server : $(serverobj)
 	$(comp) $(serverobj) -o $(path)/server $(pathlib) $(serverlib)
+
+libList : List
+	cd List && $(MAKE)
+
+List :
+	git clone https://github.com/HardDie/List.git
 
 $(path)/%.o : %.c
 	$(comp) -c $< -o $@
@@ -29,3 +35,4 @@ check_bin :
 
 clean :
 	rm -rf $(path)
+	cd List && $(MAKE) clean
