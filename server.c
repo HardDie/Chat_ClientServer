@@ -78,7 +78,7 @@ void * ListenClients() {
             ListPushBack( &list, tmpUser );
         }
     }
-	return NULL;
+	pthread_exit(NULL);
 }
 
 /*
@@ -222,5 +222,5 @@ void * WorkWithClient ( void * userStruct ) {
 	    }
 	}
 
-    return NULL;
+	pthread_exit(NULL);
 }

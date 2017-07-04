@@ -208,7 +208,7 @@ void * RecieveMessage () {
     	}
 		DrawMessage();
     }
-    return NULL;
+    pthread_exit(NULL);
 }
 
 /*
