@@ -4,9 +4,9 @@
 #include "message.h"
 
 struct usUser_t {
-    int                     socket_;
-    char                    username_[NAME_SIZE];
-    pthread_t               thread_;
+	int socket_;
+	char username_[NAME_SIZE];
+	pthread_t thread_;
 };
 
 enum state_t {

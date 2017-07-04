@@ -15,10 +15,10 @@
 #include "message.h"
 #include "global.h"
 
-int		NetStartServer();
-int		NetAcceptConnection();
-int		NetRecieveMessege( struct usUser_t * user, usMessage_t * msg );
-void	NetSendMessage( struct usUser_t * user, usMessage_t * msg );
-void 	ClearBuffer( char *buf, int size );
+int NetStartServer();
+int NetAcceptConnection();
+int NetRecieveMessege(struct usUser_t *user, usMessage_t *msg);
+void NetSendMessage(struct usUser_t *user, usMessage_t *msg);
+void ClearBuffer(char *buf, int size);
 
 #endif
