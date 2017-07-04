@@ -1,5 +1,7 @@
 #include <ncurses.h>
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include <unistd.h>
 #include <strings.h>
@@ -23,6 +25,8 @@ pthread_t treadRead;  // Поток для приема сообщений
 usMessage_t recievedMessage;
 usMessage_t sendMessage;
 
+pthread_mutex_t displayMutex;
+
 void SetupWindow();
 void ClearMemory();
 void DrawWindows();
@@ -32,8 +36,12 @@ void ClearBuffer(char* buf, int size);
 void* RecieveMessage();
 void SendMessage();
 int SetupNetwork();
+void SetupMutex();
+void ClearMutex();
+void DrawEnterMessage();
 
 int main() {
+	SetupMutex();
 	SetupWindow();
 	DrawWindows();
 
@@ -50,19 +58,18 @@ int main() {
 	pthread_create(&treadRead, NULL, RecieveMessage, NULL);
 
 	while (!isDone) {
-		wclear(winMsg);
-		wprintw(winMsg, "Enter message: ");
+		DrawEnterMessage();
 		wgetnstr(winMsg, sendMessage.msg_, MESSAGE_SIZE - 1);
 		SendMessage();
 		if (strcmp("exit", sendMessage.msg_) == 0 ||
 		    strcmp("q", sendMessage.msg_) == 0) {
 			isDone = 1;
 		}
-		wrefresh(winMsg);
 	}
 
 	close(sock_enemy);
 	ClearMemory();
+	ClearMutex();
 	return 0;
 }
 /*
@@ -157,12 +164,14 @@ DrawMessage
 ====================
 */
 void DrawMessage() {
+	pthread_mutex_lock(&displayMutex);
 	wattron(winChat, COLOR_PAIR(2));  // Меняем цвет для вывода никнейма
 	wprintw(winChat, "\n%s: ", recievedMessage.user_);
 	wattron(winChat, COLOR_PAIR(1));  // Возвращаем стандартный цвет
 	wprintw(winChat, "%s", recievedMessage.msg_);
 	wrefresh(winChat);
 	wrefresh(winMsg);
+	pthread_mutex_unlock(&displayMutex);
 }
 
 /*
@@ -173,11 +182,13 @@ DrawSystemMesage
 ====================
 */
 void DrawSystemMesage(char* msg) {
+	pthread_mutex_lock(&displayMutex);
 	wattron(winChat, COLOR_PAIR(3));  // Меняем цвет для вывода никнейма
 	wprintw(winChat, "\nSYSTEM: %s", msg);
 	wattron(winChat, COLOR_PAIR(1));  // Возвращаем стандартный цвет
 	wrefresh(winChat);
 	wrefresh(winMsg);
+	pthread_mutex_unlock(&displayMutex);
 }
 
 /*
@@ -258,4 +269,23 @@ int SetupNetwork() {
 		return -1;
 	}
 	return 0;
+}
+
+void SetupMutex() {
+	if (pthread_mutex_init(&displayMutex, NULL) != 0) {
+		fprintf(stderr, "Mutex failed init\n");
+		exit(-1);
+	}
+}
+
+void ClearMutex() {
+	pthread_mutex_destroy(&displayMutex);
+}
+
+void DrawEnterMessage() {
+	pthread_mutex_lock(&displayMutex);
+	wclear(winMsg);
+	wprintw(winMsg, "Enter message: ");
+	wrefresh(winMsg);
+	pthread_mutex_unlock(&displayMutex);
 }
