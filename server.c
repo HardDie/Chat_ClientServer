@@ -148,7 +148,7 @@ void* WorkWithClient(void* userStruct) {
 			} else {
 				strcpy(password, msg.msg_);
 			}
-			ClearBuffer(password, NAME_SIZE);
+			memset(password, 0, NAME_SIZE);
 			state = STATE_CHAT;
 			break;
 		case STATE_LOGIN:
@@ -185,7 +185,7 @@ void* WorkWithClient(void* userStruct) {
 			} else {
 				strcpy(password, msg.msg_);
 			}
-			ClearBuffer(password, NAME_SIZE);
+			memset(password, 0, NAME_SIZE);
 			state = STATE_CHAT;
 			break;
 		case STATE_CHAT:

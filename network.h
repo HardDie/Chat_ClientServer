@@ -19,6 +19,5 @@ int NetStartServer();
 int NetAcceptConnection();
 int NetRecieveMessege(struct usUser_t *user, usMessage_t *msg);
 void NetSendMessage(struct usUser_t *user, usMessage_t *msg);
-void ClearBuffer(char *buf, int size);
 
 #endif

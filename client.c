@@ -32,7 +32,6 @@ void ClearMemory();
 void DrawWindows();
 void DrawMessage();
 void DrawSystemMesage(char* msg);
-void ClearBuffer(char* buf, int size);
 void* RecieveMessage();
 void SendMessage();
 int SetupNetwork();
@@ -193,19 +192,6 @@ void DrawSystemMesage(char* msg) {
 
 /*
 ====================
-ClearBuffer
-
-	Забивает массив нулями
-====================
-*/
-void ClearBuffer(char *buf, int size) {
-	for (int i = 0; i < size; i++) {
-		buf[i] &= 0;
-	}
-}
-
-/*
-====================
 RecieveMessage
 
 	Принимает сообщения от сервера
@@ -213,7 +199,7 @@ RecieveMessage
 */
 void* RecieveMessage() {
 	while (1) {
-		ClearBuffer(recievedMessage.msg_, MESSAGE_SIZE);
+		memset(recievedMessage.msg_, 0, MESSAGE_SIZE);
 		if (recv(sock_enemy, &recievedMessage, sizeof(usMessage_t), 0) == 0) {
 			DrawSystemMesage("Server connection lost");
 			break;

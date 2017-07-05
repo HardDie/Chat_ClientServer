@@ -68,7 +68,7 @@ NetRecieveMessege
 ====================
 */
 int NetRecieveMessege(struct usUser_t* user, usMessage_t* msg) {
-	ClearBuffer(msg->msg_, MESSAGE_SIZE);
+	memset(msg->msg_, 0, MESSAGE_SIZE);
 	return recv(user->socket_, &msg->msg_, MESSAGE_SIZE, 0);
 }
 
@@ -81,17 +81,4 @@ NetSendMessage
 */
 void NetSendMessage(struct usUser_t* user, usMessage_t* msg) {
 	send(user->socket_, msg, sizeof(usMessage_t), 0);
-}
-
-/*
-====================
-ClearBuffer
-
-	Очищает массив
-====================
-*/
-void ClearBuffer(char *buf, int size) {
-	for (int i = 0; i < size; i++) {
-		buf[i] &= 0;
-	}
 }
