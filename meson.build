@@ -3,12 +3,13 @@ project('Chat client server application', 'c')
 client_src = ['client.c']
 server_src = ['server.c', 'network.c']
 
-List_lib = static_library('List', 'List/List.c')
-List_inc = include_directories('List')
-List = declare_dependency(link_with : List_lib, include_directories : List_inc)
+List_prj = subproject('List')
+List_lib = List_prj.get_variable('l')
 
 ncurses = dependency('ncurses')
 pthread = dependency('threads')
 
-executable('server', server_src, dependencies : [ pthread, List ])
+executable('server', server_src,
+           dependencies : pthread,
+           link_with : List_lib)
 executable('client', client_src, dependencies : [ pthread, ncurses ])
