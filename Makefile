@@ -38,12 +38,9 @@ $(path)/server : $(serverobj)
 	$(QUIET_BUILT_IN)$(CC) $(serverobj) -o $(path)/server $(pathlib) $(serverlib)
 
 
-libList : List
+libList :
 	$(QUIET_SUBDIR0)List $(QUIET_SUBDIR1) all
 
-
-List :
-	git clone https://github.com/HardDie/List.git
 
 $(path)/%.o : %.c
 	$(QUIET_CC)$(CC) -c $< -o $@
@@ -53,5 +50,5 @@ check_bin :
 	@ if [ ! -d $(path) ]; then mkdir $(path); fi
 
 clean : $(path)
-	$(QUIET_SUBDIR0)List $(QUIET_SUBDIR1) clean
+	$(QUIET_SUBDIR0)List $(QUIET_SUBDIR1) clean || \
 	$(QUIET_CLEAN)$(RM) -r $(path)
